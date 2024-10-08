@@ -47,4 +47,4 @@ jobs:
         id: alembic-upgrade
 
       - run: echo "failed"
-        if: failure() && steps.alembic-upgrade.outputs.exit_code != 0
+        if: ${{ failure() }} && steps.alembic-upgrade.outputs.exit_code != 0
