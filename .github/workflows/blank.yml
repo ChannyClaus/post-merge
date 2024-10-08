@@ -44,3 +44,7 @@ jobs:
       - run: uv run alembic upgrade head
         env:
           DB_URL: postgresql://postgres@localhost:5432/postgres
+        id: alembic-upgrade
+
+      - run: echo "failed"
+        if: steps.alembic-upgrade.outputs.exit_code != 0
