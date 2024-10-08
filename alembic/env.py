@@ -10,6 +10,9 @@ from alembic import context
 # access to the values within the .ini file in use.
 config = context.config
 
+if "DB_URL" in os.environ:
+    config.set_main_option("sqlalchemy.url", os.environ["DB_URL"])
+
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
@@ -40,9 +43,6 @@ def run_migrations_offline() -> None:
 
     """
     url = config.get_main_option("sqlalchemy.url")
-
-    if "DB_URL" in os.environ:
-        url = os.environ["DB_URL"]
     context.configure(
         url=url,
         target_metadata=target_metadata,
