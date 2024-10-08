@@ -41,4 +41,4 @@ jobs:
       # Runs a single command using the runners shell
       - run: uv run alembic upgrade head
         env:
-          DB_URL: postgresql://postgres@postgres:5432/postgres
+          DB_URL: postgresql://postgres@localhost:5432/postgres
