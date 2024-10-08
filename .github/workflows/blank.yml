@@ -41,7 +41,7 @@ jobs:
       - uses: astral-sh/setup-uv@v3
 
       # Runs a single command using the runners shell
-      - run: uv run alembic upgrade head && exit 1
+      - run: uv run alembic upgrade head
         env:
           DB_URL: postgresql://postgres@localhost:5432/postgres
         id: alembic-upgrade
