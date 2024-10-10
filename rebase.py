@@ -54,10 +54,9 @@ if __name__ == "__main__":
         description="Rebase the current branch to a new parent"
     )
     parser.add_argument(
-        "-p",
         "--new-parent",
         help="the new parent revision for the revision added in the current branch.",
         required=True,
     )
     args = parser.parse_args()
-    main(args.parent)
+    main(args.new_parent)
