@@ -1,5 +1,4 @@
 import argparse
-from contextlib import redirect_stdout
 import io
 from alembic.config import Config
 from alembic import command
