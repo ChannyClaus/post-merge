@@ -52,9 +52,9 @@ jobs:
         run: |
           git fetch origin main &&
           git checkout origin/main &&
-          uv run python head_revision.py >> $GITHUB_OUTPUT
+          (echo -n "revision=" && uv run python head_revision.py) >> $GITHUB_OUTPUT
 
       - if: ${{ failure() }} && steps.alembic-upgrade.outputs.exit_code != 0
         run: |
           git checkout - &&
-          echo "${{ steps.head_on_main.outputs.* }}" > head_revision.py
+          echo "${{ steps.head_on_main.outputs.revision }}"
