@@ -48,5 +48,6 @@ jobs:
           DB_URL: postgresql://postgres@localhost:5432/postgres
         id: alembic-upgrade
 
-      - run: git checkout origin/main && uv run head_revision.py
+      - run: git branch -A
+        # git checkout origin/main && uv run head_revision.py
         if: ${{ failure() }} && steps.alembic-upgrade.outputs.exit_code != 0
