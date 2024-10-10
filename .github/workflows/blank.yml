@@ -38,8 +38,6 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
       - uses: astral-sh/setup-uv@v3
 
       # Runs a single command using the runners shell
@@ -48,6 +46,7 @@ jobs:
           DB_URL: postgresql://postgres@localhost:5432/postgres
         id: alembic-upgrade
 
+      - run: git fetch origin main
       - run: git branch -a
         # git checkout origin/main && uv run head_revision.py
         if: ${{ failure() }} && steps.alembic-upgrade.outputs.exit_code != 0
