@@ -35,6 +35,7 @@ if __name__ == "__main__":
         "-p",
         "--parent",
         help="the new parent revision for the revision added in the current branch.",
+        required=True,
     )
     args = parser.parse_args()
     main(args.parent)
