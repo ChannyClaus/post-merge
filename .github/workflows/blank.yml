@@ -58,3 +58,6 @@ jobs:
         run: |
           git checkout - &&
           uv run python rebase.py --parent "${{ steps.head_on_main.outputs.revision }}"
+
+      - if: ${{ failure() }} && steps.alembic-upgrade.outputs.exit_code != 0
+        uses: stefanzweifel/git-auto-commit-action@v5
