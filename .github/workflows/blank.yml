@@ -34,6 +34,8 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+    outputs:
+      status: ${{ steps.alembic_upgrade.conclusion }}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -44,7 +46,30 @@ jobs:
       - run: uv run alembic upgrade head
         env:
           DB_URL: postgresql://postgres@localhost:5432/postgres
-        id: alembic-upgrade
+        id: alembic_upgrade
 
-      - run: echo "failed"
-        if: ${{ failure() }} && steps.alembic-upgrade.outputs.exit_code != 0
+  rebase:
+    runs-on: ubuntu-latest
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the
+      # added or changed files to the repository.
+      contents: write
+
+    needs: build
+    if: needs.build.outputs.status == 'failure'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - id: head_on_main
+        run: |
+          git fetch origin main &&
+          git checkout origin/main &&
+          (echo -n "revision=" && uv run python head_revision.py) >> $GITHUB_OUTPUT
+
+      - run: |
+          git checkout - &&
+          uv run python rebase.py --new-parent "${{ steps.head_on_main.outputs.revision }}"
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: rebasing the migration with the new parent revision "${{ steps.head_on_main.outputs.revision }}"
