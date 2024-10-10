@@ -52,19 +52,19 @@ jobs:
         id: alembic_upgrade
 
       # TODO: may be cleaner separating this into a separate job.
-      - if: ${{ failure() }} && steps.alembic_upgrade.conclusion == 'failure'
+      - if: ${{ failure() }} && steps.alembic_upgrade.outcome == 'failure'
         id: head_on_main
         run: |
           git fetch origin main &&
           git checkout origin/main &&
           (echo -n "revision=" && uv run python head_revision.py) >> $GITHUB_OUTPUT
 
-      - if: ${{ failure() }} && steps.alembic_upgrade.conclusion == 'failure'
+      - if: ${{ failure() }} && steps.alembic_upgrade.outcome == 'failure'
         run: |
           git checkout - &&
           uv run python rebase.py --new-parent "${{ steps.head_on_main.outputs.revision }}"
 
-      - if: ${{ failure() }} && steps.alembic_upgrade.conclusion == 'failure'
+      - if: ${{ failure() }} && steps.alembic_upgrade.outcome == 'failure'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: rebasing the migration with the new parent revision "${{ steps.head_on_main.outputs.revision }}"
