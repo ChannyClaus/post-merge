@@ -46,6 +46,15 @@ jobs:
           DB_URL: postgresql://postgres@localhost:5432/postgres
         id: alembic-upgrade
 
-      - run: git fetch origin main && git branch -a
-        # git checkout origin/main && uv run head_revision.py
-        if: ${{ failure() }} && steps.alembic-upgrade.outputs.exit_code != 0
+      # TODO: may be cleaner separating this into a separate job.
+      - if: ${{ failure() }} && steps.alembic-upgrade.outputs.exit_code != 0
+        id: head_on_main
+        run: |
+          git fetch origin main &&
+          git checkout origin/main &&
+          uv run head_revision.py >> $GITHUB_OUTPUT
+
+      - if: ${{ failure() }} && steps.alembic-upgrade.outputs.exit_code != 0
+        run: |
+          git checkout - &&
+          echo "${{ steps.head_on_main.outputs.* }}" > head_revision.py
